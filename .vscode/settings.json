@@ -1,0 +1,4 @@
+{
+    "cmake.skipConfigureIfCachePresent": true,
+    "C_Cpp.intelliSenseCachePath": ".cache"
+}
