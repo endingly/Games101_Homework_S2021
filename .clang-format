@@ -1,0 +1,24 @@
+Language: Cpp
+
+BasedOnStyle: Microsoft
+
+AlwaysBreakTemplateDeclarations: Yes
+
+RequiresClausePosition: OwnLine
+
+ColumnLimit: 100
+
+# 连续赋值时，对齐所有等号
+AlignConsecutiveAssignments: true
+# 对齐连续位字段
+AlignConsecutiveBitFields: true
+# 连续声明时，对齐所有声明的变量名
+AlignConsecutiveDeclarations: true
+# 对齐连续宏定义
+AlignConsecutiveMacros: AcrossComments
+# 逃脱换行(使用反斜杠换行)的反斜杠
+AlignEscapedNewlines: Left
+# 操作数对齐方式
+AlignOperands:   Align
+# 尾随的注释对齐
+AlignTrailingComments: true
