@@ -9,6 +9,7 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
+  VCPKG_ROOT: ./vcpkg
 
 jobs:
   linux_build:
@@ -16,7 +17,7 @@ jobs:
     steps:
     - name: setup system package
       run: |
-        sudo apt-get install libxmu-dev libxi-dev libgl-dev
+        sudo apt-get install libxmu-dev libxi-dev libgl-dev libxinerama-dev libxcursor-dev xorg-dev libglu1-mesa-dev pkg-config
     - uses: actions/checkout@v3
     - uses: johnwason/vcpkg-action@v5
       with:
