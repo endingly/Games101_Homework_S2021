@@ -9,6 +9,7 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: Release
+  GITHUB_TOKEN: ${{secrets.ACTION_TOKEN}}
 
 jobs:
   build:
@@ -23,6 +24,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: johnwason/vcpkg-action@v5
+      with:
+        token: ${{env.GITHUB_TOKEN}}
         
 
     - name: Configure CMake
