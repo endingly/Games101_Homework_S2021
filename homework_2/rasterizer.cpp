@@ -43,6 +43,41 @@ auto to_vec4(const Eigen::Vector3f& v3, float w = 1.0f)
 static bool insideTriangle(int x, int y, const Vector3f* _v)
 {   
     // TODO : Implement this function to check if the point (x, y) is inside the triangle represented by _v[0], _v[1], _v[2]
+    //测试点的坐标为(x, y)
+	//三角形三点的坐标分别为_v[0], _v[1], _v[2]
+
+	//叉乘公式为(x1, y1)X(x2, y2) = x1*y2 - y1*x2
+
+	//（1）准备三角形各边的的向量
+	Eigen::Vector2f side1;
+	side1 << _v[1].x() - _v[0].x(), _v[1].y() - _v[0].y();
+	Eigen::Vector2f side2;
+	side2 << _v[2].x() - _v[1].x(), _v[2].y() - _v[1].y();
+	Eigen::Vector2f side3;
+	side3 << _v[0].x() - _v[2].x(), _v[0].y() - _v[2].y();
+
+	//（2）准备测量点和三角形各点连线的向量
+	Eigen::Vector2f v1;
+	v1 << x - _v[0].x(), y - _v[0].y();
+	Eigen::Vector2f v2;
+	v2 << x - _v[1].x(), y - _v[1].y();
+	Eigen::Vector2f v3;
+	v3 << x - _v[2].x(), y - _v[2].y();
+
+	//（3）三角形各边的的向量叉乘测量点和三角形各点连线的向量
+	float z1 = side1.x() * v1.y() - side1.y() * v1.x();
+	float z2 = side2.x() * v2.y() - side2.y() * v2.x();
+	float z3 = side3.x() * v3.y() - side3.y() * v3.x();
+
+	//（4）判断叉乘结果是否有相同的符号
+	if ((z1 > 0 && z2 > 0 && z3 > 0) || (z1 < 0 && z2 < 0 && z3 < 0))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 static std::tuple<float, float, float> computeBarycentric2D(float x, float y, const Vector3f* v)
@@ -108,7 +143,7 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t) {
     
     // TODO : Find out the bounding box of current triangle.
     // iterate through the pixel and find if the current pixel is inside the triangle
-
+    
     // If so, use the following code to get the interpolated z value.
     //auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);
     //float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
@@ -116,6 +151,7 @@ void rst::rasterizer::rasterize_triangle(const Triangle& t) {
     //z_interpolated *= w_reciprocal;
 
     // TODO : set the current pixel (use the set_pixel function) to the color of the triangle (use getColor function) if it should be painted.
+    
 }
 
 void rst::rasterizer::set_model(const Eigen::Matrix4f& m)

@@ -22,3 +22,5 @@ AlignEscapedNewlines: Left
 AlignOperands:   Align
 # 尾随的注释对齐
 AlignTrailingComments: true
+# 指针和引用的对齐: Left, Right, Middle
+PointerAlignment:	Left

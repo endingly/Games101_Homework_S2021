@@ -1,10 +1,18 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
-    "name": "phu",
+    "name": "game101-homework-s2021",
     "version-string": "0.1.0",
+    "builtin-baseline": "c6592ce60ff394049905365865f59e3a4d93d35b",
     "dependencies": [
         "fmt",
         "eigen3",
-        "opencv"
+        "opencv",
+        "glew",
+        "glfw3",
+        "freetype",
+        {
+            "name": "getopt-win32",
+            "platform": "windows"
+        }
     ]
 }
