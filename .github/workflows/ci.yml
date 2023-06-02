@@ -16,7 +16,7 @@ jobs:
     steps:
     - name: setup system package
       run: |
-        apt-get install libxmu-dev libxi-dev libgl-dev
+        sudo apt-get install libxmu-dev libxi-dev libgl-dev
     - uses: actions/checkout@v3
     - uses: johnwason/vcpkg-action@v5
       with:
