@@ -8,7 +8,7 @@
 #include <math.h>
 #include <opencv2/opencv.hpp>
 
-rst::pos_buf_id rst::rasterizer::load_positions(const std::vector<Eigen::Vector3f> &positions)
+rst::pos_buf_id rst::rasterizer::load_positions(const std::vector<Eigen::Vector3f>& positions)
 {
     auto id = get_next_id();
     pos_buf.emplace(id, positions);
@@ -16,7 +16,7 @@ rst::pos_buf_id rst::rasterizer::load_positions(const std::vector<Eigen::Vector3
     return {id};
 }
 
-rst::ind_buf_id rst::rasterizer::load_indices(const std::vector<Eigen::Vector3i> &indices)
+rst::ind_buf_id rst::rasterizer::load_indices(const std::vector<Eigen::Vector3i>& indices)
 {
     auto id = get_next_id();
     ind_buf.emplace(id, indices);
@@ -24,7 +24,7 @@ rst::ind_buf_id rst::rasterizer::load_indices(const std::vector<Eigen::Vector3i>
     return {id};
 }
 
-rst::col_buf_id rst::rasterizer::load_colors(const std::vector<Eigen::Vector3f> &cols)
+rst::col_buf_id rst::rasterizer::load_colors(const std::vector<Eigen::Vector3f>& cols)
 {
     auto id = get_next_id();
     col_buf.emplace(id, cols);
@@ -32,7 +32,7 @@ rst::col_buf_id rst::rasterizer::load_colors(const std::vector<Eigen::Vector3f> 
     return {id};
 }
 
-rst::col_buf_id rst::rasterizer::load_normals(const std::vector<Eigen::Vector3f> &normals)
+rst::col_buf_id rst::rasterizer::load_normals(const std::vector<Eigen::Vector3f>& normals)
 {
     auto id = get_next_id();
     nor_buf.emplace(id, normals);
@@ -143,12 +143,12 @@ void rst::rasterizer::draw_line(Eigen::Vector3f begin, Eigen::Vector3f end)
     }
 }
 
-auto to_vec4(const Eigen::Vector3f &v3, float w = 1.0f)
+auto to_vec4(const Eigen::Vector3f& v3, float w = 1.0f)
 {
     return Vector4f(v3.x(), v3.y(), v3.z(), w);
 }
 
-static bool insideTriangle(int x, int y, const Vector4f *_v)
+static bool insideTriangle(int x, int y, const Vector4f* _v)
 {
     Vector3f v[3];
     for (int i = 0; i < 3; i++)
@@ -164,7 +164,7 @@ static bool insideTriangle(int x, int y, const Vector4f *_v)
     return false;
 }
 
-static std::tuple<float, float, float> computeBarycentric2D(float x, float y, const Vector4f *v)
+static std::tuple<float, float, float> computeBarycentric2D(float x, float y, const Vector4f* v)
 {
     float c1 = (x * (v[1].y() - v[2].y()) + (v[2].x() - v[1].x()) * y + v[1].x() * v[2].y() -
                 v[2].x() * v[1].y()) /
@@ -181,14 +181,14 @@ static std::tuple<float, float, float> computeBarycentric2D(float x, float y, co
     return {c1, c2, c3};
 }
 
-void rst::rasterizer::draw(std::vector<Triangle *> &TriangleList)
+void rst::rasterizer::draw(std::vector<Triangle*>& TriangleList)
 {
 
     float f1 = (50 - 0.1) / 2.0;
     float f2 = (50 + 0.1) / 2.0;
 
     Eigen::Matrix4f mvp = projection * view * model;
-    for (const auto &t : TriangleList)
+    for (const auto& t : TriangleList)
     {
         Triangle newtri = *t;
 
@@ -198,11 +198,11 @@ void rst::rasterizer::draw(std::vector<Triangle *> &TriangleList)
         std::array<Eigen::Vector3f, 3> viewspace_pos;
 
         std::transform(mm.begin(), mm.end(), viewspace_pos.begin(),
-                       [](auto &v) { return v.template head<3>(); });
+                       [](auto& v) { return v.template head<3>(); });
 
         Eigen::Vector4f v[] = {mvp * t->v[0], mvp * t->v[1], mvp * t->v[2]};
         // Homogeneous division
-        for (auto &vec : v)
+        for (auto& vec : v)
         {
             vec.x() /= vec.w();
             vec.y() /= vec.w();
@@ -215,7 +215,7 @@ void rst::rasterizer::draw(std::vector<Triangle *> &TriangleList)
                                      inv_trans * to_vec4(t->normal[2], 0.0f)};
 
         // Viewport transformation
-        for (auto &vert : v)
+        for (auto& vert : v)
         {
             vert.x() = 0.5 * width * (vert.x() + 1.0);
             vert.y() = 0.5 * height * (vert.y() + 1.0);
@@ -244,23 +244,15 @@ void rst::rasterizer::draw(std::vector<Triangle *> &TriangleList)
 }
 
 static Eigen::Vector3f interpolate(float alpha, float beta, float gamma,
-                                   const Eigen::Vector3f &vert1, const Eigen::Vector3f &vert2,
-                                   const Eigen::Vector3f &vert3, float weight)
+                                   const Eigen::Vector3f& vert1, const Eigen::Vector3f& vert2,
+                                   const Eigen::Vector3f& vert3, float weight)
 {
     return (alpha * vert1 + beta * vert2 + gamma * vert3) / weight;
 }
 
-static Eigen::Vector3f interpolate(float alpha, float beta, float gamma, const Eigen::Vector3f &coo,
-                                   const Eigen::Vector4f *v, float weight)
-{
-    auto r = alpha * v[0] / v[0].z() + beta * v[1] / v[1].z() + gamma * v[2] / v[2].z();
-    r *= weight;
-    return r;
-}
-
 static Eigen::Vector2f interpolate(float alpha, float beta, float gamma,
-                                   const Eigen::Vector2f &vert1, const Eigen::Vector2f &vert2,
-                                   const Eigen::Vector2f &vert3, float weight)
+                                   const Eigen::Vector2f& vert1, const Eigen::Vector2f& vert2,
+                                   const Eigen::Vector2f& vert3, float weight)
 {
     auto u = (alpha * vert1[0] + beta * vert2[0] + gamma * vert3[0]);
     auto v = (alpha * vert1[1] + beta * vert2[1] + gamma * vert3[1]);
@@ -272,8 +264,8 @@ static Eigen::Vector2f interpolate(float alpha, float beta, float gamma,
 }
 
 // Screen space rasterization
-void rst::rasterizer::rasterize_triangle(const Triangle                       &t,
-                                         const std::array<Eigen::Vector3f, 3> &view_pos)
+void rst::rasterizer::rasterize_triangle(const Triangle&                       t,
+                                         const std::array<Eigen::Vector3f, 3>& view_pos)
 {
     // TODO: From your HW3, get the triangle rasterization code.
     // TODO: Inside your rasterization loop:
@@ -324,7 +316,7 @@ void rst::rasterizer::rasterize_triangle(const Triangle                       &t
                     auto interpolated_texcoords = interpolate(alpha, beta, gamma, t.tex_coords[0],
                                                               t.tex_coords[1], t.tex_coords[2], Z);
                     // 对着色坐标进行插值
-                    Eigen::Vector3f interpolated_shadingcoords = {x, y, zp};
+                    Eigen::Vector3f interpolated_shadingcoords = {(float)x, (float)y, zp};
 
                     fragment_shader_payload payload(
                         interpolated_color, interpolated_normal.normalized(),
@@ -352,17 +344,17 @@ void rst::rasterizer::rasterize_triangle(const Triangle                       &t
     }
 }
 
-void rst::rasterizer::set_model(const Eigen::Matrix4f &m)
+void rst::rasterizer::set_model(const Eigen::Matrix4f& m)
 {
     model = m;
 }
 
-void rst::rasterizer::set_view(const Eigen::Matrix4f &v)
+void rst::rasterizer::set_view(const Eigen::Matrix4f& v)
 {
     view = v;
 }
 
-void rst::rasterizer::set_projection(const Eigen::Matrix4f &p)
+void rst::rasterizer::set_projection(const Eigen::Matrix4f& p)
 {
     projection = p;
 }
@@ -392,7 +384,7 @@ int rst::rasterizer::get_index(int x, int y)
     return (height - y) * width + x;
 }
 
-void rst::rasterizer::set_pixel(const Vector2i &point, const Eigen::Vector3f &color)
+void rst::rasterizer::set_pixel(const Vector2i& point, const Eigen::Vector3f& color)
 {
     // old index: auto ind = point.y() + point.x() * width;
     int ind        = (height - point.y()) * width + point.x();
