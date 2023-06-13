@@ -6,9 +6,7 @@
         "fmt",
         "eigen3",
         "opencv",
-        "glew",
-        "glfw3",
-        "freetype",
+        "games101-cgl",
         {
             "name": "getopt-win32",
             "platform": "windows"

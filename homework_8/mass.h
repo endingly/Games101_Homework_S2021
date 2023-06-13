@@ -1,8 +1,8 @@
 #ifndef MASS_H
 #define MASS_H
 
-#include "CGL.h"
-#include "vector2D.h"
+#include <games101-cgl/CGL.h>
+#include <games101-cgl/vector2D.h>
 
 using namespace CGL;
 
