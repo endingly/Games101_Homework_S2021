@@ -1,7 +1,7 @@
 #ifndef ROPE_H
 #define ROPE_H
 
-#include <games101-cgl/CGL.h>
+#include <CGL/CGL.h>
 #include "mass.h"
 #include "spring.h"
 

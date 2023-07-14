@@ -9,9 +9,7 @@
 #include <vector>
 
 // libCGL
-#include <games101-cgl/CGL.h>
-#include <games101-cgl/osdtext.h>
-#include <games101-cgl/renderer.h>
+#include <CGL/CGL.h>
 
 #include "rope.h"
 

@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 
-#include <games101-cgl/vector2D.h>
+#include <CGL/vector2D.h>
 
 #include "mass.h"
 #include "rope.h"

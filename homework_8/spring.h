@@ -1,7 +1,7 @@
 #ifndef SPRING_H
 #define SPRING_H
 
-#include <games101-cgl/CGL.h>
+#include <CGL/CGL.h>
 #include "mass.h"
 
 using namespace std;

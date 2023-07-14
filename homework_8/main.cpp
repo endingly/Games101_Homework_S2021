@@ -1,6 +1,4 @@
 #include "application.h"
-#include <games101-cgl/CGL.h>
-#include <games101-cgl/viewer.h>
 #include <iostream>
 #ifdef _WIN32
 // from https://github.com/Chunde/getopt-for-windows
