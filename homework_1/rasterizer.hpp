@@ -9,7 +9,8 @@
 #include <eigen3/Eigen/Eigen>
 using namespace Eigen;
 
-namespace rst {
+namespace rst
+{
 enum class Buffers
 {
     Color = 1,
@@ -64,7 +65,10 @@ class rasterizer
 
     void draw(pos_buf_id pos_buffer, ind_buf_id ind_buffer, Primitive type);
 
-    std::vector<Eigen::Vector3f>& frame_buffer() { return frame_buf; }
+    std::vector<Eigen::Vector3f>& frame_buffer()
+    {
+        return frame_buf;
+    }
 
   private:
     void draw_line(Eigen::Vector3f begin, Eigen::Vector3f end);
@@ -79,12 +83,15 @@ class rasterizer
     std::map<int, std::vector<Eigen::Vector3i>> ind_buf;
 
     std::vector<Eigen::Vector3f> frame_buf;
-    std::vector<float> depth_buf;
-    int get_index(int x, int y);
+    std::vector<float>           depth_buf;
+    int                          get_index(int x, int y);
 
     int width, height;
 
     int next_id = 0;
-    int get_next_id() { return next_id++; }
+    int get_next_id()
+    {
+        return next_id++;
+    }
 };
 } // namespace rst

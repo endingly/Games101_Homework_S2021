@@ -158,11 +158,13 @@ Eigen::Vector3f phong_fragment_shader(const fragment_shader_payload& payload)
         auto distance = std::pow(l.norm(), 2);
         auto h        = ((eye_pos - point) + l) / ((eye_pos - point) + l).norm();
 
-        auto result_diffuse = kd.array() * (light.intensity / distance).array() * std::max(0.f, l.dot(normal));
-        auto result_ambient = ka.array() * amb_light_intensity.array();
-        auto result_specular =
-            ks.array() * (light.intensity / distance).array() * std::pow(std::max(0.f, h.dot(normal)), p);
-        result_color += result_ambient.matrix() + result_diffuse.matrix() + result_specular.matrix();
+        auto result_diffuse =
+            kd.array() * (light.intensity / distance).array() * std::max(0.f, l.dot(normal));
+        auto result_ambient  = ka.array() * amb_light_intensity.array();
+        auto result_specular = ks.array() * (light.intensity / distance).array() *
+                               std::pow(std::max(0.f, h.dot(normal)), p);
+        result_color +=
+            result_ambient.matrix() + result_diffuse.matrix() + result_specular.matrix();
     }
 
     return result_color * 255.f;

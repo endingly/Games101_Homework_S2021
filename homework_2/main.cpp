@@ -25,13 +25,38 @@ Eigen::Matrix4f get_view_matrix(Eigen::Vector3f eye_pos)
 Eigen::Matrix4f get_model_matrix(float rotation_angle)
 {
     Eigen::Matrix4f model = Eigen::Matrix4f::Identity();
+    
+    Eigen::Matrix4f translate;
+    translate << cos(rotation_angle / 180.0 * acos(-1)), -sin(rotation_angle / 180.0 * acos(-1)),
+        0.0, 0.0, sin(rotation_angle / 180.0 * acos(-1)), cos(rotation_angle / 180.0 * acos(-1)),
+        0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0;
+
+    model = translate * model;
+
     return model;
 }
 
 Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float zNear, float zFar)
 {
-    // TODO: Copy-paste your implementation from the previous assignment.
+    // TODO [done]: Copy-paste your implementation from the previous assignment.
     Eigen::Matrix4f projection;
+    
+    Eigen::Matrix4f m;
+    m << zNear, 0, 0, 0, 0, zNear, 0, 0, 0, 0, zNear + zFar, -zNear * zFar, 0, 0, 1, 0;
+
+    float           halve  = eye_fov / 2 * MY_PI / 180;
+    float           top    = tan(halve) * zNear;
+    float           bottom = -top;
+    float           right  = top * aspect_ratio;
+    float           left   = -right;
+    Eigen::Matrix4f n, p;
+    n << 2 / (right - left), 0, 0, 0, 0, 2 / (top - bottom), 0, 0, 0, 0, 2 / (zNear - zFar), 0, 0,
+        0, 0, 1;
+
+    p << 1, 0, 0, -(right + left) / 2, 0, 1, 0, -(top + bottom) / 2, 0, 0, 1, -(zFar + zNear) / 2,
+        0, 0, 0, 1;
+
+    projection = n * p * m;
 
     return projection;
 }

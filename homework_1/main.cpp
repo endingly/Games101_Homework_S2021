@@ -22,9 +22,10 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle)
 {
     Eigen::Matrix4f model = Eigen::Matrix4f::Identity();
 
-    // TODO: Implement this function
+    // TODO [done]: Implement this function
     // Create the model matrix for rotating the triangle around the Z axis.
     // Then return it.
+
     Eigen::Matrix4f translate;
     translate << cos(rotation_angle / 180.0 * acos(-1)), -sin(rotation_angle / 180.0 * acos(-1)),
         0.0, 0.0, sin(rotation_angle / 180.0 * acos(-1)), cos(rotation_angle / 180.0 * acos(-1)),
@@ -35,19 +36,18 @@ Eigen::Matrix4f get_model_matrix(float rotation_angle)
     return model;
 }
 
-/// @brief 
+/// @brief
 /// @param eye_fov 视野的大小
 /// @param aspect_ratio 长宽比，猜测是视野的长宽比率
 /// @param zNear 最近处的坐标
 /// @param zFar 最远处的坐标
-/// @return 
+/// @return
 Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float zNear, float zFar)
 {
     // Students will implement this function
-
     Eigen::Matrix4f projection = Eigen::Matrix4f::Identity();
 
-    // TODO: Implement this function
+    // TODO [done]: Implement this function
     // Create the projection matrix for the given parameters.
     // Then return it.
     Eigen::Matrix4f m;
@@ -70,7 +70,7 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float z
     return projection;
 }
 
-int main(int argc, const char **argv)
+int main(int argc, const char** argv)
 {
     float       angle        = 0;
     bool        command_line = false;
