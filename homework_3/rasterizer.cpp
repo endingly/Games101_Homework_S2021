@@ -148,6 +148,11 @@ auto to_vec4(const Eigen::Vector3f& v3, float w = 1.0f)
     return Vector4f(v3.x(), v3.y(), v3.z(), w);
 }
 
+/// @brief 判断点是否在三角形内部
+/// @param x 目标点的 x 坐标
+/// @param y 目标点的 y 坐标
+/// @param _v 目标三角形的三个顶点
+/// @return
 static bool insideTriangle(int x, int y, const Vector4f* _v)
 {
     Vector3f v[3];
@@ -267,8 +272,8 @@ static Eigen::Vector2f interpolate(float alpha, float beta, float gamma,
 void rst::rasterizer::rasterize_triangle(const Triangle&                       t,
                                          const std::array<Eigen::Vector3f, 3>& view_pos)
 {
-    // TODO: From your HW3, get the triangle rasterization code.
-    // TODO: Inside your rasterization loop:
+    // [x]: From your HW3, get the triangle rasterization code.
+    // [x]: Inside your rasterization loop:
 
     // 三角形的三个顶点
     auto v = t.v;
@@ -287,60 +292,58 @@ void rst::rasterizer::rasterize_triangle(const Triangle&                       t
             // 保证在三角形中
             if (insideTriangle(x, y, v))
             {
-                // 当前点在三角形中的重心坐标
-                auto [alpha, beta, gamma] = computeBarycentric2D(x, y, v);
+                /// 当前点在三角形中的重心坐标
 
-                // 深度插值
+                auto [alpha, beta, gamma] = computeBarycentric2D(x + 0.5, y + 0.5, v);
+
+                //    * 深度插值
                 //    * v[i].w() is the vertex view space depth value z.
-                //    * Z is interpolated view space depth for the current pixel
+                //    * Z 是根据重心坐标计算出来的重心的深度值
                 //    * zp is depth between zNear and zFar, used for z-buffer
-                float Z  = 1.0 / (alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());
-                float zp = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() +
-                           gamma * v[2].z() / v[2].w();
+
+                // 1. 计算重心坐标的深度
+                float Z = 1.0 / (alpha / v[0].w() + beta / v[1].w() +
+                                 gamma / v[2].w()); // # Math: \frac{1}{\frac{\alpha}{z_1} +\frac{\beta}{z_2} + \frac{\gamma}{z_3}}
+                
+                // 2. 根据重心坐标的深度计算出当前点的深度，加上透视除法
+                float zp =
+                    alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() +
+                    gamma * v[2].z() /
+                        v[2].w(); // # Math: \alpha\frac{z_1}{w_1}+\beta\frac{z_2}{w_2}+\gamma\frac{z_3}{w_3}
                 zp *= Z;
 
                 auto depth_buf_position = &(depth_buf[get_index(x, y)]);
                 if (zp < *depth_buf_position)
                 {
+                    Eigen::Vector2i p = {(float)x, (float)y};
+
                     // 更新深度缓存
                     *depth_buf_position = zp;
 
-                    // 计算各个插值量
+                    // [x]: Interpolate the attributes:
                     // 对颜色进行插值计算
                     auto interpolated_color =
-                        interpolate(alpha, beta, gamma, t.color[0], t.color[1], t.color[2], Z);
+                        interpolate(alpha, beta, gamma, t.color[0], t.color[1], t.color[2], 1);
                     // 对向量进行插值
                     auto interpolated_normal =
-                        interpolate(alpha, beta, gamma, t.normal[0], t.normal[1], t.normal[2], Z);
+                        interpolate(alpha, beta, gamma, t.normal[0], t.normal[1], t.normal[2], 1);
                     // 对纹理进行插值
                     auto interpolated_texcoords = interpolate(alpha, beta, gamma, t.tex_coords[0],
-                                                              t.tex_coords[1], t.tex_coords[2], Z);
+                                                              t.tex_coords[1], t.tex_coords[2], 1);
                     // 对着色坐标进行插值
-                    Eigen::Vector3f interpolated_shadingcoords = {(float)x, (float)y, zp};
+                    Eigen::Vector3f interpolated_shadingcoords =
+                        interpolate(alpha, beta, gamma, view_pos[0], view_pos[1], view_pos[2], 1);
 
                     fragment_shader_payload payload(
                         interpolated_color, interpolated_normal.normalized(),
                         interpolated_texcoords, texture ? &*texture : nullptr);
                     payload.view_pos = interpolated_shadingcoords;
                     auto pixel_color = fragment_shader(payload);
-                    frame_buf.push_back(pixel_color);
+                    set_pixel(p, pixel_color); // 设置颜色
+                    depth_buf[get_index(x, y)] = zp; // 更新z值
                 }
             }
         }
-
-        // TODO: Interpolate the attributes:
-        // auto interpolated_color
-        // auto interpolated_normal
-        // auto interpolated_texcoords
-        // auto interpolated_shadingcoords
-
-        // Use: fragment_shader_payload payload(
-        // interpolated_color,interpolated_normal.normalized(),
-        // interpolated_texcoords, texture ?
-        // &*texture : nullptr); Use: payload.view_pos = interpolated_shadingcoords;
-        // Use: Instead of passing the triangle's color directly to the frame
-        // buffer, pass the color to the shaders first to get the final color; Use:
-        // auto pixel_color = fragment_shader(payload);
     }
 }
 
