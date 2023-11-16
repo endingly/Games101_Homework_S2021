@@ -1,8 +1,8 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
     "name": "game101-homework-s2021",
-    "builtin-baseline": "dafef74af53669ef1cc9015f55e0ce809ead62aa",
     "version-string": "0.1.0",
+    "builtin-baseline": "fe1e9f508ee13ed3d0a7d318beac7efe1ec4f9d7",
     "dependencies": [
         "fmt",
         "eigen3",

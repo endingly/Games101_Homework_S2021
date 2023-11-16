@@ -6,7 +6,14 @@
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
     "cmake.configureArgs": [
         "-DCMAKE_TOOLCHAIN_FILE=${env:VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "-DVCPKG_TARGET_TRIPLET=x64-windows"
+        "-DVCPKG_TARGET_TRIPLET=x64-windows",
+        "-DCMAKE_GENERATOR_EXECUTABLE=G:/soft/cmake/bin/ninja.exe",
     ],
-    "todo-tree.tree.showCountsInTree": true
+    "todo-tree.tree.showCountsInTree": true,
+    "files.associations": {
+        "*.sx": "asm-collection",
+        "*.S": "asm-collection",
+        "*.cppm": "cpp",
+        "vector": "cpp"
+    }
 }
